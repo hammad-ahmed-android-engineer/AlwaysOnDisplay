@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -84,7 +86,7 @@ fun AtomicClockDetailScreen(
                             hourHandResId = R.drawable.hour1,
                             minuteHandResId = R.drawable.minute1,
                             secondHandResId = R.drawable.second1,
-                            modifier = Modifier.size(AppDimensions.components.emptyStateIconContainer * 3)
+                            modifier = Modifier.size(AppDimensions.components.emptyStateIconContainer * 2.4f)
                         )
                         Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
                         AppTypography.BodyMedium(text = uiState.batteryText)
@@ -92,8 +94,10 @@ fun AtomicClockDetailScreen(
                 }
 
                 Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppCard(modifier = Modifier.fillMaxWidth()) {

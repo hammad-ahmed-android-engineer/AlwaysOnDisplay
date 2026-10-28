@@ -17,24 +17,8 @@ class ClockSettingsRepositoryImpl(
         return dataStore.clockConfigFlow
     }
 
-    override suspend fun updateActiveCategory(category: ClockCategory) {
-        dataStore.updateActiveCategory(category)
-    }
-
-    override suspend fun updateDigitalStyle(styleKey: String) {
-        dataStore.updateDigitalStyle(styleKey)
-    }
-
-    override suspend fun updateAbstractStyle(styleKey: String) {
-        dataStore.updateAbstractStyle(styleKey)
-    }
-
-    override suspend fun updateNeonStyle(styleKey: String) {
-        dataStore.updateNeonStyle(styleKey)
-    }
-
-    override suspend fun updateAtomicStyle(styleKey: String) {
-        dataStore.updateAtomicStyle(styleKey)
+    override suspend fun updateSelectedClock(category: ClockCategory, styleKey: String) {
+        dataStore.updateSelectedClock(category, styleKey)
     }
 
     override suspend fun updateServiceState(isActivated: Boolean) {

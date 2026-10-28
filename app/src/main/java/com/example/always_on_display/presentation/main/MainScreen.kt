@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -33,6 +38,7 @@ import com.example.always_on_display.core.designsystem.theme.dimensions.AppDimen
 import com.example.always_on_display.core.designsystem.theme.typography.AppTypography
 import com.example.always_on_display.service.OverlayService
 
+@Preview
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
@@ -78,87 +84,184 @@ fun MainScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(AppDimensions.spacing.default)
-        ) {
-            // Service Toggle Card
-            AppCard(
-                modifier = Modifier.fillMaxWidth()
+        if (isLandscape) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(AppDimensions.spacing.default),
+                horizontalArrangement = Arrangement.spacedBy(AppDimensions.spacing.large),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
+                // Left Column: Service Control Card
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(AppDimensions.spacing.medium),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        AppTypography.TitleMedium(text = stringResource(id = R.string.always_on_display_service))
-                        AppTypography.SubText(
-                            text = if (uiState.isEffectiveServiceActive) {
-                                stringResource(id = R.string.service_is_active)
-                            } else {
-                                stringResource(id = R.string.service_is_disabled)
+                    AppCard(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(AppDimensions.spacing.medium),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                AppTypography.TitleMedium(text = stringResource(id = R.string.always_on_display_service))
+                                AppTypography.SubText(
+                                    text = if (uiState.isEffectiveServiceActive) {
+                                        stringResource(id = R.string.service_is_active)
+                                    } else {
+                                        stringResource(id = R.string.service_is_disabled)
+                                    }
+                                )
+                            }
+                            AppSwitch(
+                                checked = uiState.isEffectiveServiceActive,
+                                onCheckedChange = { enabled ->
+                                    viewModel.toggleService(
+                                        context = context,
+                                        enabled = enabled,
+                                        onRequestPermission = onRequestOverlayPermission
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Right Column: Clock Categories Grid
+                Column(
+                    modifier = Modifier
+                        .weight(1.3f)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    AppTypography.TitleLarge(text = stringResource(id = R.string.clock_categories))
+                    Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement = Arrangement.spacedBy(AppDimensions.spacing.small),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimensions.spacing.small),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(260.dp)
+                    ) {
+                        item {
+                            CategoryCard(
+                                title = stringResource(id = R.string.digital_clocks),
+                                iconRes = R.drawable.ic_digital_top,
+                                onClick = onNavigateToDigital
+                            )
+                        }
+                        item {
+                            CategoryCard(
+                                title = stringResource(id = R.string.abstract_clocks),
+                                iconRes = R.drawable.ic_abstract_top,
+                                onClick = onNavigateToAbstract
+                            )
+                        }
+                        item {
+                            CategoryCard(
+                                title = stringResource(id = R.string.neon_clocks),
+                                iconRes = R.drawable.ic_neon_top,
+                                onClick = onNavigateToNeon
+                            )
+                        }
+                        item {
+                            CategoryCard(
+                                title = stringResource(id = R.string.atomic_clocks),
+                                iconRes = R.drawable.ic_atomic_top,
+                                onClick = onNavigateToAtomic
+                            )
+                        }
+                    }
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(AppDimensions.spacing.default)
+            ) {
+                // Service Toggle Card
+                AppCard(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(AppDimensions.spacing.medium),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            AppTypography.TitleMedium(text = stringResource(id = R.string.always_on_display_service))
+                            AppTypography.SubText(
+                                text = if (uiState.isEffectiveServiceActive) {
+                                    stringResource(id = R.string.service_is_active)
+                                } else {
+                                    stringResource(id = R.string.service_is_disabled)
+                                }
+                            )
+                        }
+                        AppSwitch(
+                            checked = uiState.isEffectiveServiceActive,
+                            onCheckedChange = { enabled ->
+                                viewModel.toggleService(
+                                    context = context,
+                                    enabled = enabled,
+                                    onRequestPermission = onRequestOverlayPermission
+                                )
                             }
                         )
                     }
-                    AppSwitch(
-                        checked = uiState.isEffectiveServiceActive,
-                        onCheckedChange = { enabled ->
-                            viewModel.toggleService(
-                                context = context,
-                                enabled = enabled,
-                                onRequestPermission = onRequestOverlayPermission
-                            )
-                        }
-                    )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(AppDimensions.spacing.large))
+                Spacer(modifier = Modifier.height(AppDimensions.spacing.large))
 
-            AppTypography.TitleLarge(text = stringResource(id = R.string.clock_categories))
+                AppTypography.TitleLarge(text = stringResource(id = R.string.clock_categories))
 
-            Spacer(modifier = Modifier.height(AppDimensions.spacing.medium))
+                Spacer(modifier = Modifier.height(AppDimensions.spacing.medium))
 
-            val columns = if (isLandscape) GridCells.Fixed(4) else GridCells.Fixed(2)
-
-            LazyVerticalGrid(
-                columns = columns,
-                verticalArrangement = Arrangement.spacedBy(AppDimensions.spacing.medium),
-                horizontalArrangement = Arrangement.spacedBy(AppDimensions.spacing.medium),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    CategoryCard(
-                        title = stringResource(id = R.string.digital_clocks),
-                        iconRes = R.drawable.ic_digital_top,
-                        onClick = onNavigateToDigital
-                    )
-                }
-                item {
-                    CategoryCard(
-                        title = stringResource(id = R.string.abstract_clocks),
-                        iconRes = R.drawable.ic_abstract_top,
-                        onClick = onNavigateToAbstract
-                    )
-                }
-                item {
-                    CategoryCard(
-                        title = stringResource(id = R.string.neon_clocks),
-                        iconRes = R.drawable.ic_neon_top,
-                        onClick = onNavigateToNeon
-                    )
-                }
-                item {
-                    CategoryCard(
-                        title = stringResource(id = R.string.atomic_clocks),
-                        iconRes = R.drawable.ic_atomic_top,
-                        onClick = onNavigateToAtomic
-                    )
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    verticalArrangement = Arrangement.spacedBy(AppDimensions.spacing.medium),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimensions.spacing.medium),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    item {
+                        CategoryCard(
+                            title = stringResource(id = R.string.digital_clocks),
+                            iconRes = R.drawable.ic_digital_top,
+                            onClick = onNavigateToDigital
+                        )
+                    }
+                    item {
+                        CategoryCard(
+                            title = stringResource(id = R.string.abstract_clocks),
+                            iconRes = R.drawable.ic_abstract_top,
+                            onClick = onNavigateToAbstract
+                        )
+                    }
+                    item {
+                        CategoryCard(
+                            title = stringResource(id = R.string.neon_clocks),
+                            iconRes = R.drawable.ic_neon_top,
+                            onClick = onNavigateToNeon
+                        )
+                    }
+                    item {
+                        CategoryCard(
+                            title = stringResource(id = R.string.atomic_clocks),
+                            iconRes = R.drawable.ic_atomic_top,
+                            onClick = onNavigateToAtomic
+                        )
+                    }
                 }
             }
         }

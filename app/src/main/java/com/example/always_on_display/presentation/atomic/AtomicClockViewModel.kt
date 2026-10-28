@@ -27,7 +27,8 @@ class AtomicClockViewModel(
         viewModelScope.launch {
             getClockSettingsUseCase().collect { config ->
                 _uiState.value = _uiState.value.copy(
-                    selectedStyle = config.selectedAtomicStyle
+                    selectedStyle = config.selectedStyle,
+                    selectedCategory = config.selectedCategory
                 )
             }
         }
@@ -59,7 +60,7 @@ class AtomicClockViewModel(
 
     fun applyAtomicClock(styleKey: String, onApplied: () -> Unit) {
         viewModelScope.launch {
-            saveClockSettingsUseCase.selectClockStyle(ClockCategory.ATOMIC, styleKey)
+            saveClockSettingsUseCase.selectClock(ClockCategory.ATOMIC, styleKey)
             onApplied()
         }
     }

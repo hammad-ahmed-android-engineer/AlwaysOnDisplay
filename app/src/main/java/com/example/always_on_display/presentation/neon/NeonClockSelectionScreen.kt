@@ -21,6 +21,7 @@ import com.example.always_on_display.core.designsystem.components.AppScaffold
 import com.example.always_on_display.core.designsystem.components.AppTopAppBar
 import com.example.always_on_display.core.designsystem.components.ClockItemCard
 import com.example.always_on_display.core.designsystem.theme.dimensions.AppDimensions
+import com.example.always_on_display.domain.model.ClockCategory
 
 @Composable
 fun NeonClockSelectionScreen(
@@ -32,7 +33,7 @@ fun NeonClockSelectionScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val columns = if (isLandscape) GridCells.Fixed(3) else GridCells.Fixed(2)
+    val columns = if (isLandscape) GridCells.Fixed(4) else GridCells.Fixed(2)
 
     val styles = listOf(
         "neon1", "neon2", "neon3", "neon4", "neon5",
@@ -66,10 +67,11 @@ fun NeonClockSelectionScreen(
         ) {
             items(styles.size) { index ->
                 val styleKey = styles[index]
-                val isSelected = styleKey == uiState.selectedStyle
+                val isSelected = (uiState.selectedCategory == ClockCategory.NEON && styleKey == uiState.selectedStyle)
                 ClockItemCard(
                     title = "Neon ${styleKey.removePrefix("neon")}",
                     isSelected = isSelected,
+                    isAnalog = true,
                     onClick = { onSelectStyle(styleKey) }
                 ) {
                     val dialRes = NeonClockResourceMapper.getDialRes(styleKey)
@@ -82,7 +84,9 @@ fun NeonClockSelectionScreen(
                         hourHandResId = R.drawable.hour1,
                         minuteHandResId = R.drawable.minute1,
                         secondHandResId = R.drawable.second1,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(if (isLandscape) AppDimensions.spacing.extraLarge else AppDimensions.spacing.small)
                     )
                 }
             }

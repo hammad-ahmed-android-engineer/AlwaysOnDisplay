@@ -23,7 +23,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:showWhenLocked="true"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:theme="@style/Theme.AlwaysOnDisplay">
             <intent-filter>
@@ -31,6 +30,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".AlwaysOnDisplayActivity"
+            android:exported="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:excludeFromRecents="true"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:theme="@style/Theme.AlwaysOnDisplay" />
 
         <service
             android:name=".service.OverlayService"

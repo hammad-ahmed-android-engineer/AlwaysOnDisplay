@@ -36,7 +36,8 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(DigitalClockViewModel::class.java) -> {
                 DigitalClockViewModel(
                     getClockSettingsUseCase = appContainer.getClockSettingsUseCase,
-                    saveClockSettingsUseCase = appContainer.saveClockSettingsUseCase
+                    saveClockSettingsUseCase = appContainer.saveClockSettingsUseCase,
+                    getBatteryInfoUseCase = appContainer.getBatteryInfoUseCase
                 ) as T
             }
             modelClass.isAssignableFrom(AbstractClockViewModel::class.java) -> {

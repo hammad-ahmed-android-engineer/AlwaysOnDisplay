@@ -39,7 +39,8 @@ fun AppDigitalClock(
     dateText: String,
     batteryText: String,
     modifier: Modifier = Modifier,
-    showCardBackground: Boolean = false
+    showCardBackground: Boolean = false,
+    isCompact: Boolean = false
 ) {
     val secVal = second.toFloatOrNull() ?: 0f
 
@@ -47,35 +48,56 @@ fun AppDigitalClock(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(AppDimensions.spacing.small),
+                .padding(if (isCompact) AppDimensions.spacing.micro else AppDimensions.spacing.small),
             contentAlignment = Alignment.Center
         ) {
             when (style) {
                 "digital1" -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AppTypography.DisplayLarge(
-                            text = "$hour:$minute",
-                            color = NeonRed,
-                            fontWeight = FontWeight.Bold
-                        )
-                        AppTypography.LabelLarge(
-                            text = second,
-                            color = NeonYellow
-                        )
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.BodySmall(text = dateText, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        AppTypography.Caption(text = batteryText)
+                        if (isCompact) {
+                            AppTypography.TitleLarge(
+                                text = "$hour:$minute",
+                                color = NeonRed,
+                                fontWeight = FontWeight.Bold
+                            )
+                            AppTypography.LabelSmall(
+                                text = second,
+                                color = NeonYellow
+                            )
+                        } else {
+                            AppTypography.DisplayLarge(
+                                text = "$hour:$minute",
+                                color = NeonRed,
+                                fontWeight = FontWeight.Bold
+                            )
+                            AppTypography.LabelLarge(
+                                text = second,
+                                color = NeonYellow
+                            )
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
+                            AppTypography.BodySmall(text = dateText, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.Caption(text = batteryText)
+                        }
                     }
                 }
                 "digital2" -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AppTypography.DisplayLarge(
-                            text = "$hour:$minute",
-                            color = NeonYellow,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
-                        AppTypography.TitleSmall(text = batteryText, color = NeonGreen)
+                        if (isCompact) {
+                            AppTypography.TitleLarge(
+                                text = "$hour:$minute",
+                                color = NeonYellow,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        } else {
+                            AppTypography.DisplayLarge(
+                                text = "$hour:$minute",
+                                color = NeonYellow,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.TitleSmall(text = batteryText, color = NeonGreen)
+                        }
                     }
                 }
                 "digital3" -> {
@@ -83,20 +105,29 @@ fun AppDigitalClock(
                         Box(contentAlignment = Alignment.Center) {
                             AppCircularProgress(
                                 progress = (secVal / 60f) * 100f,
-                                modifier = Modifier.size(AppDimensions.components.emptyStateIconContainer * 2),
+                                modifier = Modifier.size(if (isCompact) AppDimensions.icons.huge * 1.5f else AppDimensions.components.emptyStateIconContainer * 2),
                                 color = Digital3NeonPurple,
-                                strokeWidth = AppDimensions.borders.thick * 2
+                                strokeWidth = if (isCompact) AppDimensions.borders.medium else AppDimensions.borders.thick * 2
                             )
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                AppTypography.HeadingMedium(
-                                    text = "$hour:$minute",
-                                    color = Digital3NeonPurple
-                                )
-                                AppTypography.LabelSmall(text = second, color = Color.White)
+                                if (isCompact) {
+                                    AppTypography.TitleSmall(
+                                        text = "$hour:$minute",
+                                        color = Digital3NeonPurple
+                                    )
+                                } else {
+                                    AppTypography.HeadingMedium(
+                                        text = "$hour:$minute",
+                                        color = Digital3NeonPurple
+                                    )
+                                    AppTypography.LabelSmall(text = second, color = Color.White)
+                                }
                             }
                         }
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.Caption(text = batteryText)
+                        if (!isCompact) {
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.Caption(text = batteryText)
+                        }
                     }
                 }
                 "digital4" -> {
@@ -104,28 +135,47 @@ fun AppDigitalClock(
                         Box(
                             modifier = Modifier
                                 .background(NeonGreen.copy(alpha = 0.15f), RoundedCornerShape(AppDimensions.corners.medium))
-                                .padding(AppDimensions.spacing.small)
+                                .padding(if (isCompact) AppDimensions.spacing.micro else AppDimensions.spacing.small)
                         ) {
-                            AppTypography.DisplayMedium(
-                                text = "$hour:$minute:$second",
-                                color = NeonGreen
-                            )
+                            if (isCompact) {
+                                AppTypography.TitleMedium(
+                                    text = "$hour:$minute:$second",
+                                    color = NeonGreen
+                                )
+                            } else {
+                                AppTypography.DisplayMedium(
+                                    text = "$hour:$minute:$second",
+                                    color = NeonGreen
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.Caption(text = batteryText)
+                        if (!isCompact) {
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.Caption(text = batteryText)
+                        }
                     }
                 }
                 "digital5" -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AppTypography.DisplayLarge(text = "$hour:$minute", color = NeonBlue)
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppLinearProgress(
-                            progress = secVal / 60f,
-                            color = NeonBlue,
-                            modifier = Modifier.padding(horizontal = AppDimensions.spacing.medium)
-                        )
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.Caption(text = batteryText)
+                        if (isCompact) {
+                            AppTypography.TitleLarge(text = "$hour:$minute", color = NeonBlue)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
+                            AppLinearProgress(
+                                progress = secVal / 60f,
+                                color = NeonBlue,
+                                modifier = Modifier.padding(horizontal = AppDimensions.spacing.small)
+                            )
+                        } else {
+                            AppTypography.DisplayLarge(text = "$hour:$minute", color = NeonBlue)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
+                            AppLinearProgress(
+                                progress = secVal / 60f,
+                                color = NeonBlue,
+                                modifier = Modifier.padding(horizontal = AppDimensions.spacing.medium)
+                            )
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.Caption(text = batteryText)
+                        }
                     }
                 }
                 "digital6" -> {
@@ -134,36 +184,56 @@ fun AppDigitalClock(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            AppTypography.DisplayLarge(text = hour, color = NeonYellow)
-                            AppTypography.DisplayLarge(text = ":", color = Color.White)
-                            AppTypography.DisplayLarge(text = minute, color = NeonYellow)
+                            if (isCompact) {
+                                AppTypography.TitleLarge(text = hour, color = NeonYellow)
+                                AppTypography.TitleLarge(text = ":", color = Color.White)
+                                AppTypography.TitleLarge(text = minute, color = NeonYellow)
+                            } else {
+                                AppTypography.DisplayLarge(text = hour, color = NeonYellow)
+                                AppTypography.DisplayLarge(text = ":", color = Color.White)
+                                AppTypography.DisplayLarge(text = minute, color = NeonYellow)
+                            }
                         }
-                        AppTypography.TitleMedium(text = second, color = NeonRed)
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.Caption(text = "$dateText • $batteryText")
+                        if (!isCompact) {
+                            AppTypography.TitleMedium(text = second, color = NeonRed)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.Caption(text = "$dateText • $batteryText")
+                        }
                     }
                 }
                 "digital7" -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AppTypography.DisplayLarge(text = "$hour:$minute", color = NeonGreen)
-                        AppTypography.LabelLarge(text = "$second s", color = NeonYellow)
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.Caption(text = dateText)
+                        if (isCompact) {
+                            AppTypography.TitleLarge(text = "$hour:$minute", color = NeonGreen)
+                        } else {
+                            AppTypography.DisplayLarge(text = "$hour:$minute", color = NeonGreen)
+                            AppTypography.LabelLarge(text = "$second s", color = NeonYellow)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
+                            AppTypography.Caption(text = dateText)
+                        }
                     }
                 }
                 "digital8" -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AppTypography.DisplayLarge(text = "$hour:$minute", color = MaterialTheme.colorScheme.primary)
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.BodySmall(text = batteryText)
+                        if (isCompact) {
+                            AppTypography.TitleLarge(text = "$hour:$minute", color = MaterialTheme.colorScheme.primary)
+                        } else {
+                            AppTypography.DisplayLarge(text = "$hour:$minute", color = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.BodySmall(text = batteryText)
+                        }
                     }
                 }
                 "digital9" -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        AppTypography.DisplayLarge(text = "$hour:$minute", color = Color.White, fontWeight = FontWeight.Bold)
-                        AppTypography.TitleSmall(text = second, color = NeonPink)
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.Caption(text = dateText)
+                        if (isCompact) {
+                            AppTypography.TitleLarge(text = "$hour:$minute", color = Color.White, fontWeight = FontWeight.Bold)
+                        } else {
+                            AppTypography.DisplayLarge(text = "$hour:$minute", color = Color.White, fontWeight = FontWeight.Bold)
+                            AppTypography.TitleSmall(text = second, color = NeonPink)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
+                            AppTypography.Caption(text = dateText)
+                        }
                     }
                 }
                 else -> { // digital10
@@ -172,13 +242,21 @@ fun AppDigitalClock(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            AppTypography.DisplayLarge(text = hour, color = NeonPink)
-                            AppTypography.DisplayLarge(text = ":", color = Color.White)
-                            AppTypography.DisplayLarge(text = minute, color = NeonBlue)
+                            if (isCompact) {
+                                AppTypography.TitleLarge(text = hour, color = NeonPink)
+                                AppTypography.TitleLarge(text = ":", color = Color.White)
+                                AppTypography.TitleLarge(text = minute, color = NeonBlue)
+                            } else {
+                                AppTypography.DisplayLarge(text = hour, color = NeonPink)
+                                AppTypography.DisplayLarge(text = ":", color = Color.White)
+                                AppTypography.DisplayLarge(text = minute, color = NeonBlue)
+                            }
                         }
-                        AppTypography.TitleSmall(text = second, color = NeonYellow)
-                        Spacer(modifier = Modifier.height(AppDimensions.spacing.micro))
-                        AppTypography.Caption(text = batteryText)
+                        if (!isCompact) {
+                            AppTypography.TitleSmall(text = second, color = NeonYellow)
+                            Spacer(modifier = Modifier.height(AppDimensions.spacing.small))
+                            AppTypography.Caption(text = batteryText)
+                        }
                     }
                 }
             }

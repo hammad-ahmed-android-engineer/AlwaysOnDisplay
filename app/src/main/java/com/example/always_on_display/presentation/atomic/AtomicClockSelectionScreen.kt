@@ -21,6 +21,7 @@ import com.example.always_on_display.core.designsystem.components.AppScaffold
 import com.example.always_on_display.core.designsystem.components.AppTopAppBar
 import com.example.always_on_display.core.designsystem.components.ClockItemCard
 import com.example.always_on_display.core.designsystem.theme.dimensions.AppDimensions
+import com.example.always_on_display.domain.model.ClockCategory
 
 @Composable
 fun AtomicClockSelectionScreen(
@@ -66,10 +67,11 @@ fun AtomicClockSelectionScreen(
         ) {
             items(styles.size) { index ->
                 val styleKey = styles[index]
-                val isSelected = styleKey == uiState.selectedStyle
+                val isSelected = (uiState.selectedCategory == ClockCategory.ATOMIC && styleKey == uiState.selectedStyle)
                 ClockItemCard(
                     title = "Atomic ${styleKey.removePrefix("atomic")}",
                     isSelected = isSelected,
+                    isAnalog = true,
                     onClick = { onSelectStyle(styleKey) }
                 ) {
                     val dialRes = AtomicClockResourceMapper.getDialRes(styleKey)
@@ -82,7 +84,9 @@ fun AtomicClockSelectionScreen(
                         hourHandResId = R.drawable.hour1,
                         minuteHandResId = R.drawable.minute1,
                         secondHandResId = R.drawable.second1,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(if (isLandscape) AppDimensions.spacing.extraLarge else AppDimensions.spacing.small)
                     )
                 }
             }

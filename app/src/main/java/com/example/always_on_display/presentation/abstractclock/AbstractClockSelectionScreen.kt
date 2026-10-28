@@ -21,6 +21,7 @@ import com.example.always_on_display.core.designsystem.components.AppScaffold
 import com.example.always_on_display.core.designsystem.components.AppTopAppBar
 import com.example.always_on_display.core.designsystem.components.ClockItemCard
 import com.example.always_on_display.core.designsystem.theme.dimensions.AppDimensions
+import com.example.always_on_display.domain.model.ClockCategory
 
 @Composable
 fun AbstractClockSelectionScreen(
@@ -32,7 +33,7 @@ fun AbstractClockSelectionScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val columns = if (isLandscape) GridCells.Fixed(3) else GridCells.Fixed(2)
+    val columns = if (isLandscape) GridCells.Fixed(4) else GridCells.Fixed(2)
 
     val styles = listOf(
         "abstract1", "abstract2", "abstract3", "abstract4", "abstract5",
@@ -66,10 +67,11 @@ fun AbstractClockSelectionScreen(
         ) {
             items(styles.size) { index ->
                 val styleKey = styles[index]
-                val isSelected = styleKey == uiState.selectedStyle
+                val isSelected = (uiState.selectedCategory == ClockCategory.ABSTRACT && styleKey == uiState.selectedStyle)
                 ClockItemCard(
                     title = "Abstract ${styleKey.removePrefix("abstract")}",
                     isSelected = isSelected,
+                    isAnalog = true,
                     onClick = { onSelectStyle(styleKey) }
                 ) {
                     val dialRes = AbstractClockResourceMapper.getDialRes(styleKey)
@@ -85,7 +87,9 @@ fun AbstractClockSelectionScreen(
                         hourHandResId = hourRes,
                         minuteHandResId = minRes,
                         secondHandResId = secRes,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(if (isLandscape) AppDimensions.spacing.extraLarge else AppDimensions.spacing.small)
                     )
                 }
             }

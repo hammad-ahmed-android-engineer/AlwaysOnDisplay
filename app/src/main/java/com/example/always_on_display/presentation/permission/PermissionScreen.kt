@@ -126,8 +126,10 @@ fun PermissionScreen(
                 }
 
                 Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AppCard(modifier = Modifier.fillMaxWidth()) {

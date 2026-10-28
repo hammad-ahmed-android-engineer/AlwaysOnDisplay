@@ -2,6 +2,7 @@ package com.example.always_on_display.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.always_on_display.AlwaysOnDisplayActivity
 import com.example.always_on_display.di.AppContainer
 import com.example.always_on_display.di.ViewModelFactory
 import com.example.always_on_display.presentation.abstractclock.AbstractClockDetailScreen
@@ -39,6 +41,7 @@ fun AppNavigation(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val factory = ViewModelFactory(appContainer)
 
     NavHost(
@@ -79,7 +82,7 @@ fun AppNavigation(
                 onNavigateToAbstract = { navController.navigate("abstract_selection") },
                 onNavigateToNeon = { navController.navigate("neon_selection") },
                 onNavigateToAtomic = { navController.navigate("atomic_selection") },
-                onNavigateToDisplay = { navController.navigate("always_on_display") },
+                onNavigateToDisplay = { AlwaysOnDisplayActivity.start(context) },
                 onRequestOverlayPermission = { navController.navigate("permission") }
             )
         }
@@ -107,7 +110,7 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() },
                 onApplied = { navController.navigate("main") { popUpTo("main") { inclusive = true } } },
                 onNavigateToDisplay = {
-                    navController.navigate("always_on_display?category=DIGITAL&styleKey=$styleKey")
+                    AlwaysOnDisplayActivity.start(context, "DIGITAL", styleKey)
                 }
             )
         }
@@ -135,7 +138,7 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() },
                 onApplied = { navController.navigate("main") { popUpTo("main") { inclusive = true } } },
                 onNavigateToDisplay = {
-                    navController.navigate("always_on_display?category=ABSTRACT&styleKey=$styleKey")
+                    AlwaysOnDisplayActivity.start(context, "ABSTRACT", styleKey)
                 }
             )
         }
@@ -163,7 +166,7 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() },
                 onApplied = { navController.navigate("main") { popUpTo("main") { inclusive = true } } },
                 onNavigateToDisplay = {
-                    navController.navigate("always_on_display?category=NEON&styleKey=$styleKey")
+                    AlwaysOnDisplayActivity.start(context, "NEON", styleKey)
                 }
             )
         }
@@ -191,7 +194,7 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() },
                 onApplied = { navController.navigate("main") { popUpTo("main") { inclusive = true } } },
                 onNavigateToDisplay = {
-                    navController.navigate("always_on_display?category=ATOMIC&styleKey=$styleKey")
+                    AlwaysOnDisplayActivity.start(context, "ATOMIC", styleKey)
                 }
             )
         }

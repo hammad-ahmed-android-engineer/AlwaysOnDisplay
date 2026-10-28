@@ -14,22 +14,44 @@ import kotlinx.coroutines.flow.callbackFlow
  * Extension function on [Context] to listen for battery state changes as a Flow.
  */
 fun Context.batteryStatusFlow(): Flow<BatteryInfo> = callbackFlow {
+    fun parseBatteryInfo(intent: Intent?): BatteryInfo {
+        if (intent == null) return BatteryInfo(percentage = 100, statusText = "Not Charging")
+
+        val rawLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+        val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+        val percentage = if (rawLevel >= 0 && scale > 0) {
+            ((rawLevel.toFloat() / scale.toFloat()) * 100f).toInt()
+        } else {
+            0
+        }
+
+        val statusInt = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+        val plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+
+        val isPlugged = plugged == BatteryManager.BATTERY_PLUGGED_AC ||
+                plugged == BatteryManager.BATTERY_PLUGGED_USB ||
+                plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS
+
+        val isCharging = isPlugged || statusInt == BatteryManager.BATTERY_STATUS_CHARGING
+
+        val statusText = when {
+            statusInt == BatteryManager.BATTERY_STATUS_FULL -> "Battery Full"
+            isCharging -> "Charging"
+            else -> "Not Charging"
+        }
+
+        return BatteryInfo(percentage = percentage, statusText = statusText)
+    }
+
     val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-            val status = when (intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)) {
-                BatteryManager.BATTERY_STATUS_CHARGING -> "Charging"
-                BatteryManager.BATTERY_STATUS_DISCHARGING -> "Not Charging"
-                BatteryManager.BATTERY_STATUS_FULL -> "Battery Full"
-                BatteryManager.BATTERY_STATUS_NOT_CHARGING -> "Not Charging"
-                else -> "Unknown"
-            }
-            trySend(BatteryInfo(percentage = level, statusText = status))
+            trySend(parseBatteryInfo(intent))
         }
     }
 
     val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-    registerReceiver(receiver, filter)
+    val stickyIntent = registerReceiver(receiver, filter)
+    stickyIntent?.let { trySend(parseBatteryInfo(it)) }
 
     awaitClose {
         try {

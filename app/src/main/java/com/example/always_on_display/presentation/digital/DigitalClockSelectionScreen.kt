@@ -21,6 +21,7 @@ import com.example.always_on_display.core.designsystem.components.AppScaffold
 import com.example.always_on_display.core.designsystem.components.AppTopAppBar
 import com.example.always_on_display.core.designsystem.components.ClockItemCard
 import com.example.always_on_display.core.designsystem.theme.dimensions.AppDimensions
+import com.example.always_on_display.domain.model.ClockCategory
 
 @Composable
 fun DigitalClockSelectionScreen(
@@ -32,7 +33,7 @@ fun DigitalClockSelectionScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val columns = if (isLandscape) GridCells.Fixed(3) else GridCells.Fixed(2)
+    val columns = if (isLandscape) GridCells.Fixed(4) else GridCells.Fixed(2)
 
     val styles = listOf(
         "digital1", "digital2", "digital3", "digital4", "digital5",
@@ -66,7 +67,7 @@ fun DigitalClockSelectionScreen(
         ) {
             items(styles.size) { index ->
                 val styleKey = styles[index]
-                val isSelected = styleKey == uiState.selectedStyle
+                val isSelected = (uiState.selectedCategory == ClockCategory.DIGITAL && styleKey == uiState.selectedStyle)
                 ClockItemCard(
                     title = "Digital ${styleKey.removePrefix("digital")}",
                     isSelected = isSelected,
@@ -80,7 +81,8 @@ fun DigitalClockSelectionScreen(
                         dateText = uiState.dateText,
                         batteryText = uiState.batteryText,
                         modifier = Modifier.fillMaxSize(),
-                        showCardBackground = false
+                        showCardBackground = false,
+                        isCompact = true
                     )
                 }
             }

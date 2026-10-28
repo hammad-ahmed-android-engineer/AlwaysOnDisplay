@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
+import com.example.always_on_display.AlwaysOnDisplayActivity
 import com.example.always_on_display.MainActivity
 import com.example.always_on_display.R
 
@@ -116,11 +117,7 @@ class OverlayService : Service() {
     }
 
     private fun showOverlayActivity(context: Context) {
-        Intent(context, MainActivity::class.java).apply {
-            putExtra("EXTRA_SHOW_AOD", true)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            context.startActivity(this)
-        }
+        AlwaysOnDisplayActivity.start(context)
     }
 
     companion object {

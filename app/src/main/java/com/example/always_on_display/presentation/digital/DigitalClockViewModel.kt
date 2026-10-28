@@ -3,6 +3,7 @@ package com.example.always_on_display.presentation.digital
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.always_on_display.domain.model.ClockCategory
+import com.example.always_on_display.domain.usecases.GetBatteryInfoUseCase
 import com.example.always_on_display.domain.usecases.GetClockSettingsUseCase
 import com.example.always_on_display.domain.usecases.SaveClockSettingsUseCase
 import kotlinx.coroutines.delay
@@ -17,7 +18,8 @@ import java.util.Locale
 
 class DigitalClockViewModel(
     getClockSettingsUseCase: GetClockSettingsUseCase,
-    private val saveClockSettingsUseCase: SaveClockSettingsUseCase
+    private val saveClockSettingsUseCase: SaveClockSettingsUseCase,
+    getBatteryInfoUseCase: GetBatteryInfoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DigitalClockUiState())
@@ -27,7 +29,16 @@ class DigitalClockViewModel(
         viewModelScope.launch {
             getClockSettingsUseCase().collect { config ->
                 _uiState.value = _uiState.value.copy(
-                    selectedStyle = config.selectedDigitalStyle
+                    selectedStyle = config.selectedStyle,
+                    selectedCategory = config.selectedCategory
+                )
+            }
+        }
+
+        viewModelScope.launch {
+            getBatteryInfoUseCase().collect { batteryInfo ->
+                _uiState.value = _uiState.value.copy(
+                    batteryText = "${batteryInfo.statusText} ${batteryInfo.percentage} %"
                 )
             }
         }
@@ -53,7 +64,7 @@ class DigitalClockViewModel(
 
     fun applyDigitalClock(styleKey: String, onApplied: () -> Unit) {
         viewModelScope.launch {
-            saveClockSettingsUseCase.selectClockStyle(ClockCategory.DIGITAL, styleKey)
+            saveClockSettingsUseCase.selectClock(ClockCategory.DIGITAL, styleKey)
             onApplied()
         }
     }

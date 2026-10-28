@@ -27,7 +27,8 @@ class AbstractClockViewModel(
         viewModelScope.launch {
             getClockSettingsUseCase().collect { config ->
                 _uiState.value = _uiState.value.copy(
-                    selectedStyle = config.selectedAbstractStyle
+                    selectedStyle = config.selectedStyle,
+                    selectedCategory = config.selectedCategory
                 )
             }
         }
@@ -59,7 +60,7 @@ class AbstractClockViewModel(
 
     fun applyAbstractClock(styleKey: String, onApplied: () -> Unit) {
         viewModelScope.launch {
-            saveClockSettingsUseCase.selectClockStyle(ClockCategory.ABSTRACT, styleKey)
+            saveClockSettingsUseCase.selectClock(ClockCategory.ABSTRACT, styleKey)
             onApplied()
         }
     }

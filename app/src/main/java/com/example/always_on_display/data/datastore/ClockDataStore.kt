@@ -20,59 +20,36 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class ClockDataStore(private val context: Context) {
 
     companion object {
+        val KEY_SELECTED_CATEGORY = stringPreferencesKey("selected_category")
+        val KEY_SELECTED_STYLE = stringPreferencesKey("selected_style")
+        val KEY_SERVICE_ACTIVATED = booleanPreferencesKey("service_activated")
+
+        // Legacy keys for backward compatibility
         val KEY_ACTIVE_CATEGORY = stringPreferencesKey("active_category")
         val KEY_DIGITAL_STYLE = stringPreferencesKey("digital_style")
-        val KEY_ABSTRACT_STYLE = stringPreferencesKey("abstract_style")
-        val KEY_NEON_STYLE = stringPreferencesKey("neon_style")
-        val KEY_ATOMIC_STYLE = stringPreferencesKey("atomic_style")
-        val KEY_SERVICE_ACTIVATED = booleanPreferencesKey("service_activated")
     }
 
     val clockConfigFlow: Flow<ClockConfig> = context.dataStore.data.map { prefs ->
-        val categoryStr = prefs[KEY_ACTIVE_CATEGORY] ?: ClockCategory.DIGITAL.name
+        val categoryStr = prefs[KEY_SELECTED_CATEGORY] ?: prefs[KEY_ACTIVE_CATEGORY] ?: ClockCategory.DIGITAL.name
         val category = try {
             ClockCategory.valueOf(categoryStr)
         } catch (_: Exception) {
             ClockCategory.DIGITAL
         }
 
+        val style = prefs[KEY_SELECTED_STYLE] ?: prefs[KEY_DIGITAL_STYLE] ?: "digital1"
+
         ClockConfig(
-            activeCategory = category,
-            selectedDigitalStyle = prefs[KEY_DIGITAL_STYLE] ?: "digital1",
-            selectedAbstractStyle = prefs[KEY_ABSTRACT_STYLE] ?: "abstract1",
-            selectedNeonStyle = prefs[KEY_NEON_STYLE] ?: "neon1",
-            selectedAtomicStyle = prefs[KEY_ATOMIC_STYLE] ?: "atomic1",
+            selectedCategory = category,
+            selectedStyle = style,
             isServiceActivated = prefs[KEY_SERVICE_ACTIVATED] ?: false
         )
     }
 
-    suspend fun updateActiveCategory(category: ClockCategory) {
+    suspend fun updateSelectedClock(category: ClockCategory, styleKey: String) {
         context.dataStore.edit { prefs ->
-            prefs[KEY_ACTIVE_CATEGORY] = category.name
-        }
-    }
-
-    suspend fun updateDigitalStyle(styleKey: String) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_DIGITAL_STYLE] = styleKey
-        }
-    }
-
-    suspend fun updateAbstractStyle(styleKey: String) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_ABSTRACT_STYLE] = styleKey
-        }
-    }
-
-    suspend fun updateNeonStyle(styleKey: String) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_NEON_STYLE] = styleKey
-        }
-    }
-
-    suspend fun updateAtomicStyle(styleKey: String) {
-        context.dataStore.edit { prefs ->
-            prefs[KEY_ATOMIC_STYLE] = styleKey
+            prefs[KEY_SELECTED_CATEGORY] = category.name
+            prefs[KEY_SELECTED_STYLE] = styleKey
         }
     }
 

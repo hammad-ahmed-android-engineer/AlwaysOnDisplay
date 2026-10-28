@@ -27,7 +27,8 @@ class NeonClockViewModel(
         viewModelScope.launch {
             getClockSettingsUseCase().collect { config ->
                 _uiState.value = _uiState.value.copy(
-                    selectedStyle = config.selectedNeonStyle
+                    selectedStyle = config.selectedStyle,
+                    selectedCategory = config.selectedCategory
                 )
             }
         }
@@ -59,7 +60,7 @@ class NeonClockViewModel(
 
     fun applyNeonClock(styleKey: String, onApplied: () -> Unit) {
         viewModelScope.launch {
-            saveClockSettingsUseCase.selectClockStyle(ClockCategory.NEON, styleKey)
+            saveClockSettingsUseCase.selectClock(ClockCategory.NEON, styleKey)
             onApplied()
         }
     }

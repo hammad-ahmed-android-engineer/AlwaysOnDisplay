@@ -1,5 +1,6 @@
 package com.example.always_on_display.core.designsystem.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import com.example.always_on_display.core.designsystem.theme.dimensions.AppDimensions
 import com.example.always_on_display.core.designsystem.theme.typography.AppTypography
 import com.example.always_on_display.core.utils.clickableDebounced
@@ -34,8 +36,21 @@ fun ClockItemCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
+    isAnalog: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val cardHeight = if (isLandscape) {
+        if (isAnalog) {
+            AppDimensions.components.emptyStateIconContainer * 2.1f
+        } else {
+            AppDimensions.components.emptyStateIconContainer * 1.8f
+        }
+    } else {
+        AppDimensions.components.emptyStateIconContainer * 3f
+    }
+
     val borderColor = if (isSelected) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -51,7 +66,7 @@ fun ClockItemCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(AppDimensions.components.emptyStateIconContainer * 3)
+            .height(cardHeight)
             .clickableDebounced(onClick = onClick),
         shape = RoundedCornerShape(AppDimensions.corners.large),
         colors = CardDefaults.cardColors(
@@ -66,7 +81,7 @@ fun ClockItemCard(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(AppDimensions.spacing.small),
+                    .padding(if (isLandscape) AppDimensions.spacing.micro else AppDimensions.spacing.small),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
