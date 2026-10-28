@@ -1,15 +1,15 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.alwaysondisplay.analogclock.digital.nightclock"
-        minSdk = 21
-        targetSdk = 34
+        applicationId = "com.example.always_on_display"
+        minSdk = 24
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
         multiDexEnabled = true
@@ -17,7 +17,6 @@ android {
     }
 
     buildTypes {
-
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -29,32 +28,44 @@ android {
 
         getByName("debug") {
             isMinifyEnabled = false
-            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+    }
 
-    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
+
     buildFeatures {
         viewBinding = true
+        compose = true
+        buildConfig = true
     }
-    namespace = "com.alwaysondisplay.analogclock.digital.nightclock"
+
+    namespace = "com.example.always_on_display"
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("com.intuit.sdp:sdp-android:1.1.0")
-    implementation("com.intuit.ssp:ssp-android:1.1.0")
-    implementation("com.mikhaellopez:circularprogressbar:3.1.0")
-    implementation("com.github.leondzn:simple-analog-clock:1.0.1")
-    implementation("com.github.jakob-grabner:Circle-Progress-View:1.4")
-    implementation("com.airbnb.android:lottie:5.2.0")
-    implementation("androidx.work:work-runtime:2.9.0")
-    implementation("com.github.ybq:Android-SpinKit:1.4.0")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.material)
+    implementation(libs.sdp.android)
+    implementation(libs.ssp.android)
+    implementation(libs.lottie.compose)
+    implementation(libs.androidx.work.runtime)
 }

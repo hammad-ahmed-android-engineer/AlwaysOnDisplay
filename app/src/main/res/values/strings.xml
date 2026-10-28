@@ -1,7 +1,39 @@
 <resources>
     <string name="app_name">Always On Display</string>
+    <string name="get_started">Get Started</string>
+    <string name="always_on_display_service">Always On Display Service</string>
+    <string name="service_is_active">Service is Active</string>
+    <string name="service_is_disabled">Service is Disabled</string>
+    <string name="clock_categories">Clock Categories</string>
+    <string name="digital_clocks">Digital Clocks</string>
+    <string name="abstract_clocks">Abstract Clocks</string>
+    <string name="neon_clocks">Neon Clocks</string>
+    <string name="atomic_clocks">Atomic Clocks</string>
+    <string name="select_digital_clock">Select Digital Clock</string>
+    <string name="select_abstract_clock">Select Abstract Clock</string>
+    <string name="select_neon_clock">Select Neon Clock</string>
+    <string name="select_atomic_clock">Select Atomic Clock</string>
+    <string name="preview_clock">Preview %1$s</string>
+    <string name="abstract_clock_title">Abstract %1$s</string>
+    <string name="neon_clock_title">Neon %1$s</string>
+    <string name="atomic_clock_title">Atomic %1$s</string>
+    <string name="cancel">Cancel</string>
+    <string name="apply_clock">Apply Clock</string>
+    <string name="back">Back</string>
+    <string name="aod_active_description">Always On Display is active</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Overlay Permission Screen Strings -->
+    <string name="overlay_permission_title">Display Over Other Apps</string>
+    <string name="overlay_permission_subtitle">System Permission Required</string>
+    <string name="overlay_permission_description">To display customizable digital and analog clocks when your screen is locked, Always On Display requires the System Overlay (\'Display Over Other Apps\') permission.</string>
+    <string name="overlay_permission_step1">1. Tap \'Grant Permission\' below to open System Settings.</string>
+    <string name="overlay_permission_step2">2. Locate Always On Display and enable \'Allow display over other apps\'.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="continue_to_app">Continue to App</string>
 
+    <!-- Clock Detail & Settings Options -->
+    <string name="preview_fullscreen">Full Screen Preview</string>
+    <string name="clock_settings">Clock Options</string>
+    <string name="show_date_battery">Show Date &amp; Battery Info</string>
+    <string name="smooth_animation">Smooth Second Hand Animation</string>
 </resources>
