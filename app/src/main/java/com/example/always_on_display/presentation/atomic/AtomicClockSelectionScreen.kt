@@ -30,6 +30,7 @@ fun AtomicClockSelectionScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
